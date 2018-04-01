@@ -162,6 +162,10 @@ end
 
 function ReturnRaidManager:ImportLayout()
 
+    for i = 1, 40 do
+        ReturnRaidManager.UI["NameBox"..i]:SetText("")
+    end
+
     text = ReturnRaidManager.UI.ImportBox:GetText()
 
     words = {}
