@@ -1,39 +1,4 @@
 
-ReturnRaidManager.UI = nil
-ReturnRaidManager.ImportLayoutFrame = nil
-
-
-function ReturnRaidManager:CheckName(editbox)
-
-    text = editbox:GetText()
-
-    if string.len(text) < 3 then
-        return
-    end
-
-    for i = 1,40 do
-        name, _, _, _, _, class = GetRaidRosterInfo(i)
-        if text == name then
-            local color = ReturnRaidManager.Constants.ClassColors[class]
-            editbox:SetTextColor(color.r, color.g, color.b, 1)
-            return
-        end
-    end
-
-    numTotalMembers = GetNumGuildMembers();
-    for i = 1,numTotalMembers do
-        name, _, _, _, class = GetGuildRosterInfo(i)
-        if text == name then
-            local color = ReturnRaidManager.Constants.ClassColors[class]
-            editbox:SetTextColor(color.r, color.g, color.b, 0.5)
-            return
-        end
-    end
-
-    editbox:SetTextColor(1, 0, 0)
-end
-
-
 function ReturnRaidManager:CreateNameBox(idx)
 
     local editbox = CreateFrame("Editbox", "NameBox"..idx, ReturnRaidManager.UI, "InputBoxTemplate")
@@ -57,6 +22,24 @@ function ReturnRaidManager:CreateNameBox(idx)
     end
 
     return editbox
+end
+
+
+function ReturnRaidManager:CreateSavedLayoutButton(name)
+
+    button = CreateFrame('Button', "SavedLayoutButton"..ReturnRaidManager.UI.SavedLayoutIdx, ReturnRaidManager.UI, "UIPanelButtonTemplate")
+
+    local x = 20 + floor(ReturnRaidManager.UI.SavedLayoutIdx / 4) * 110
+    local y = -210 + math.mod(ReturnRaidManager.UI.SavedLayoutIdx, 4) * -25
+
+    button:SetPoint('TOPLEFT', ReturnRaidManager.UI, 'TOPLEFT', x, y)
+    button:SetHeight(20)
+    button:SetWidth(100)
+    button:SetText(name)
+
+    button:SetScript("OnClick", function() self:LoadSavedRaidLayout(name) end)
+
+    ReturnRaidManager.UI.SavedLayoutIdx = ReturnRaidManager.UI.SavedLayoutIdx + 1
 end
 
 
@@ -96,16 +79,27 @@ function ReturnRaidManager:ToggleUI()
             ReturnRaidManager.UI["NameBox" .. i] = self:CreateNameBox(i)
         end
 
+        ReturnRaidManager.UI.SavedLayoutIdx = 0
+        for name, layout in self.db.account.SavedLayouts do
+            self:CreateSavedLayoutButton(name)
+        end
 
         ReturnRaidManager.UI.CloseButton = CreateFrame("Button", "CloseButton", ReturnRaidManager.UI, "UIPanelCloseButton")
         ReturnRaidManager.UI.CloseButton:SetPoint("TOPRIGHT", ReturnRaidManager.UI, "TOPRIGHT", 0, 0)
         
         ReturnRaidManager.UI.LoadCurrentButton = CreateFrame("Button", "LoadCurrentButton", ReturnRaidManager.UI, "UIPanelButtonTemplate")
-        ReturnRaidManager.UI.LoadCurrentButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.UI, "BOTTOMRIGHT", -240, 10)
+        ReturnRaidManager.UI.LoadCurrentButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.UI, "BOTTOMRIGHT", -350, 10)
         ReturnRaidManager.UI.LoadCurrentButton:SetHeight(20)
         ReturnRaidManager.UI.LoadCurrentButton:SetWidth(100)
         ReturnRaidManager.UI.LoadCurrentButton:SetText("Load Current")
         ReturnRaidManager.UI.LoadCurrentButton:SetScript("OnClick", function() self:LoadCurrentRaidLayout() end)
+
+        ReturnRaidManager.UI.SaveButton = CreateFrame("Button", "SaveButton", ReturnRaidManager.UI, "UIPanelButtonTemplate")
+        ReturnRaidManager.UI.SaveButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.UI, "BOTTOMRIGHT", -240, 10)
+        ReturnRaidManager.UI.SaveButton:SetHeight(20)
+        ReturnRaidManager.UI.SaveButton:SetWidth(100)
+        ReturnRaidManager.UI.SaveButton:SetText("Save")
+        ReturnRaidManager.UI.SaveButton:SetScript("OnClick", function() self:ToggleSaveCurrentRaidLayoutFrame() end)
 
         ReturnRaidManager.UI.ImportButton = CreateFrame("Button", "ImportButton", ReturnRaidManager.UI, "UIPanelButtonTemplate")
         ReturnRaidManager.UI.ImportButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.UI, "BOTTOMRIGHT", -130, 10)
@@ -129,6 +123,66 @@ function ReturnRaidManager:ToggleUI()
     end
 
 end
+
+
+function ReturnRaidManager:ToggleSaveCurrentRaidLayoutFrame()
+
+    if not ReturnRaidManager.SaveLayoutFrame then
+
+        ReturnRaidManager.SaveLayoutFrame = CreateFrame("Frame", "ReturnRaidManagerSaveLayoutFrame", ReturnRaidManager.UI);
+        ReturnRaidManager.SaveLayoutFrame:SetWidth(140)
+        ReturnRaidManager.SaveLayoutFrame:SetHeight(120)
+        ReturnRaidManager.SaveLayoutFrame:SetPoint("CENTER", 0, 0)
+        ReturnRaidManager.SaveLayoutFrame:SetFrameStrata("FULLSCREEN")
+
+        ReturnRaidManager.SaveLayoutFrame:Hide()
+
+        ReturnRaidManager.SaveLayoutFrame:SetBackdrop({
+            bgFile = "Interface/Buttons/WHITE8x8",
+            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+            tile = true,
+            tileSize = 16, edgeSize = 16, 
+            insets = {left = 4, right = 4, top = 4, bottom = 4},
+        })
+        ReturnRaidManager.SaveLayoutFrame:SetBackdropColor(0, 0, 0, 1)
+
+        ReturnRaidManager.SaveLayoutFrame.title = ReturnRaidManager.SaveLayoutFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormalHuge")
+        ReturnRaidManager.SaveLayoutFrame.title:SetPoint("TOP", ReturnRaidManager.SaveLayoutFrame, "TOP", 0, -10)
+        ReturnRaidManager.SaveLayoutFrame.title:SetShadowColor(0, 0, 0)
+        ReturnRaidManager.SaveLayoutFrame.title:SetShadowOffset(0.8, -0.8)
+        ReturnRaidManager.SaveLayoutFrame.title:SetTextColor(1,1,1)
+        ReturnRaidManager.SaveLayoutFrame.title:SetText("Save")
+
+
+        ReturnRaidManager.SaveLayoutFrame.SaveNameBox = CreateFrame("Editbox", "SaveNameBox", ReturnRaidManager.SaveLayoutFrame, "InputBoxTemplate")
+        ReturnRaidManager.SaveLayoutFrame.SaveNameBox:SetHeight(20)
+        ReturnRaidManager.SaveLayoutFrame.SaveNameBox:SetWidth(100)
+        ReturnRaidManager.SaveLayoutFrame.SaveNameBox:SetAutoFocus(true)
+        ReturnRaidManager.SaveLayoutFrame.SaveNameBox:SetPoint("TOPLEFT", ReturnRaidManager.SaveLayoutFrame, "TOPLEFT", 20, -50)
+        
+        ReturnRaidManager.SaveLayoutFrame.CloseButton = CreateFrame("Button", "SaveLayoutFrameCloseButton", ReturnRaidManager.SaveLayoutFrame, "UIPanelCloseButton")
+        ReturnRaidManager.SaveLayoutFrame.CloseButton:SetPoint("TOPRIGHT", ReturnRaidManager.SaveLayoutFrame, "TOPRIGHT", 0, 0)
+
+        ReturnRaidManager.SaveLayoutFrame.SaveButton = CreateFrame("Button", "SaveLayoutFrameSaveButton", ReturnRaidManager.SaveLayoutFrame, "UIPanelButtonTemplate")
+        ReturnRaidManager.SaveLayoutFrame.SaveButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.SaveLayoutFrame, "BOTTOMRIGHT", -20, 10)
+        ReturnRaidManager.SaveLayoutFrame.SaveButton:SetHeight(20)
+        ReturnRaidManager.SaveLayoutFrame.SaveButton:SetWidth(100)
+        ReturnRaidManager.SaveLayoutFrame.SaveButton:SetText("Save")
+        ReturnRaidManager.SaveLayoutFrame.SaveButton:SetScript("OnClick", function() 
+                self:SaveCurrentRaidLayout(ReturnRaidManager.SaveLayoutFrame.SaveNameBox:GetText())
+                self:ToggleSaveCurrentRaidLayoutFrame()
+            end)
+    end
+
+    if ReturnRaidManager.SaveLayoutFrame:IsVisible() then
+        ReturnRaidManager.SaveLayoutFrame:Hide()
+    else
+        ReturnRaidManager.SaveLayoutFrame.SaveNameBox:SetText(ReturnRaidManager.UI.LoadedRaidLayout or "")
+        ReturnRaidManager.SaveLayoutFrame:Show()
+    end
+
+end
+
 
 function ReturnRaidManager:ToggleImportLayoutFrame()
 
@@ -173,7 +227,7 @@ function ReturnRaidManager:ToggleImportLayoutFrame()
         ReturnRaidManager.ImportLayoutFrame.ImportBox:SetWidth(665)
         ReturnRaidManager.ImportLayoutFrame.ImportBox:SetPoint("TOPLEFT", ReturnRaidManager.ImportLayoutFrame, "TOPLEFT", 20, -50)
         ReturnRaidManager.ImportLayoutFrame.ImportBox:SetPoint("BOTTOMRIGHT", ReturnRaidManager.ImportLayoutFrame, "BOTTOMRIGHT", -20, 50)
-        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetAutoFocus(nil)
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetAutoFocus(true)
         ReturnRaidManager.ImportLayoutFrame.ImportBox:SetFont("Fonts/FRIZQT__.TTF", 10)
         ReturnRaidManager.ImportLayoutFrame.ImportBox:SetJustifyH("LEFT")
         ReturnRaidManager.ImportLayoutFrame.ImportBox:SetJustifyV("CENTER")
@@ -187,7 +241,10 @@ function ReturnRaidManager:ToggleImportLayoutFrame()
         ReturnRaidManager.ImportLayoutFrame.ImportButton:SetHeight(20)
         ReturnRaidManager.ImportLayoutFrame.ImportButton:SetWidth(100)
         ReturnRaidManager.ImportLayoutFrame.ImportButton:SetText("Import")
-        ReturnRaidManager.ImportLayoutFrame.ImportButton:SetScript("OnClick", function() self:ImportLayout() end)
+        ReturnRaidManager.ImportLayoutFrame.ImportButton:SetScript("OnClick", function()
+                self:ImportLayout()
+                self:ToggleImportLayoutFrame()
+            end)
     end
 
     if ReturnRaidManager.ImportLayoutFrame:IsVisible() then
@@ -195,6 +252,38 @@ function ReturnRaidManager:ToggleImportLayoutFrame()
     else
         ReturnRaidManager.ImportLayoutFrame:Show()
     end
+end
+
+
+
+function ReturnRaidManager:LoadSavedRaidLayout(name)
+
+    for i = 1, 40 do
+        ReturnRaidManager.UI["NameBox"..i]:SetText("")
+    end
+
+    layout = self.db.account.SavedLayouts[name]
+
+    for i = 1, 40 do
+        ReturnRaidManager.UI["NameBox"..i]:SetText(layout[i])
+    end
+
+    ReturnRaidManager.UI.LoadedRaidLayout = name
+end
+
+function ReturnRaidManager:SaveCurrentRaidLayout(name)
+
+    layout = {}
+    for i = 1, 40 do
+        text = ReturnRaidManager.UI["NameBox"..i]:GetText()
+        table.insert(layout, text)
+    end
+
+    if not self.db.account.SavedLayouts[name] then
+        self:CreateSavedLayoutButton(name)
+    end
+
+    self.db.account.SavedLayouts[name] = layout
 end
 
 
@@ -216,7 +305,6 @@ function ReturnRaidManager:ImportLayout()
         ReturnRaidManager.UI["NameBox"..idx]:SetText(w)
     end
 
-    self:ToggleImportLayoutFrame();
 end
 
 function ReturnRaidManager:LoadCurrentRaidLayout()

@@ -1,7 +1,11 @@
 
-ReturnRaidManager = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0")
+ReturnRaidManager = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0", "AceDB-2.0")
 ReturnRaidManager:RegisterChatCommand({"/ReturnRaidManager", "/rrm"}, {type = 'execute', func = "ToggleUI"})
+ReturnRaidManager:RegisterDB("ReturnRaidManagerDB")
 
+ReturnRaidManager:RegisterDefaults("account", {
+    SavedLayouts = {}
+})
 
 ReturnRaidManager.PlayerInfoByName = {}
 ReturnRaidManager.PlayerInfoByRaidIndex = {}
@@ -79,4 +83,35 @@ function ReturnRaidManager:ExecuteLayout()
         end
     end
 
+end
+
+
+function ReturnRaidManager:CheckName(editbox)
+
+    text = editbox:GetText()
+
+    if string.len(text) < 3 then
+        return
+    end
+
+    for i = 1,40 do
+        name, _, _, _, _, class = GetRaidRosterInfo(i)
+        if text == name then
+            local color = ReturnRaidManager.Constants.ClassColors[class]
+            editbox:SetTextColor(color.r, color.g, color.b, 1)
+            return
+        end
+    end
+
+    numTotalMembers = GetNumGuildMembers();
+    for i = 1,numTotalMembers do
+        name, _, _, _, class = GetGuildRosterInfo(i)
+        if text == name then
+            local color = ReturnRaidManager.Constants.ClassColors[class]
+            editbox:SetTextColor(color.r, color.g, color.b, 0.5)
+            return
+        end
+    end
+
+    editbox:SetTextColor(1, 0, 0)
 end
