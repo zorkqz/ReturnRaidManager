@@ -140,52 +140,6 @@ function ReturnRaidManager:ToggleUI()
 
 end
 
-function ReturnRaidManager:ToggleImportLayoutFrame()
-
-    if not ReturnRaidManager.ImportLayoutFrame then
-
-        ReturnRaidManager.ImportLayoutFrame = CreateFrame("Frame", "ReturnRaidManagerImportLayoutFrame", ReturnRaidManager.UI);
-        ReturnRaidManager.ImportLayoutFrame:SetWidth(320)
-        ReturnRaidManager.ImportLayoutFrame:SetHeight(280)
-        ReturnRaidManager.ImportLayoutFrame:SetPoint("CENTER", 0, 0)
-        ReturnRaidManager.ImportLayoutFrame:SetFrameStrata("DIALOG")
-
-        ReturnRaidManager.ImportLayoutFrame:Hide()
-
-        ReturnRaidManager.ImportLayoutFrame:SetBackdrop({
-            bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-            tile = true,
-            tileSize = 16, edgeSize = 16, 
-            insets = {left = 4, right = 4, top = 4, bottom = 4},
-        })
-        ReturnRaidManager.ImportLayoutFrame:SetBackdropColor(0, 0, 0, 1)
-
-        ReturnRaidManager.ImportLayoutFrame.title = ReturnRaidManager.ImportLayoutFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormalHuge")
-        ReturnRaidManager.ImportLayoutFrame.title:SetPoint("TOP", ReturnRaidManager.ImportLayoutFrame, "TOP", 0, -10)
-        ReturnRaidManager.ImportLayoutFrame.title:SetShadowColor(0, 0, 0)
-        ReturnRaidManager.ImportLayoutFrame.title:SetShadowOffset(0.8, -0.8)
-        ReturnRaidManager.ImportLayoutFrame.title:SetTextColor(1,1,1)
-        ReturnRaidManager.ImportLayoutFrame.title:SetText("Import")
-
-        ReturnRaidManager.ImportLayoutFrame.CloseButton = CreateFrame("Button", "ImportLayoutFrameCloseButton", ReturnRaidManager.ImportLayoutFrame, "UIPanelCloseButton")
-        ReturnRaidManager.ImportLayoutFrame.CloseButton:SetPoint("TOPRIGHT", ReturnRaidManager.ImportLayoutFrame, "TOPRIGHT", 0, 0)
-
-        ReturnRaidManager.ImportLayoutFrame.ExecuteButton = CreateFrame("Button", "ImportLayoutFrameImportButton", ReturnRaidManager.ImportLayoutFrame, "UIPanelButtonTemplate")
-        ReturnRaidManager.ImportLayoutFrame.ExecuteButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.ImportLayoutFrame, "BOTTOMRIGHT", -10, 10)
-        ReturnRaidManager.ImportLayoutFrame.ExecuteButton:SetHeight(20)
-        ReturnRaidManager.ImportLayoutFrame.ExecuteButton:SetWidth(100)
-        ReturnRaidManager.ImportLayoutFrame.ExecuteButton:SetText("Import")
-        ReturnRaidManager.ImportLayoutFrame.ExecuteButton:SetScript("OnClick", function() self:ImportLayout() end)
-    end
-
-    if ReturnRaidManager.ImportLayoutFrame:IsVisible() then
-        ReturnRaidManager.ImportLayoutFrame:Hide()
-    else
-        ReturnRaidManager.ImportLayoutFrame:Show()
-    end
-end
-
 
 function ReturnRaidManager:ImportLayout()
 

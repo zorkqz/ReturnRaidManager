@@ -1,15 +1,6 @@
 
-ReturnRaidManager = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0", "AceDB-2.0")
+ReturnRaidManager = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0")
 ReturnRaidManager:RegisterChatCommand({"/ReturnRaidManager", "/rrm"}, {type = 'execute', func = "ToggleUI"})
-ReturnRaidManager:RegisterDB("ReturnRaidManagerDB")
-
-ReturnRaidManager:RegisterDefaults("account", {
-    message = "Welcome Home!"
-} )
-
-
-function ReturnRaidManager:OnEnable()
-end
 
 
 ReturnRaidManager.PlayerInfoByName = {}
