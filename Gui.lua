@@ -97,35 +97,6 @@ function ReturnRaidManager:ToggleUI()
         end
 
 
-        ReturnRaidManager.UI.ImportBox = CreateFrame("Editbox", "ImportBox", ReturnRaidManager.UI)
-        ReturnRaidManager.UI.ImportBox:SetBackdrop({
-            bgFile = "Interface/Buttons/WHITE8x8",
-            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-            edgeSize = 16,
-            insets = {left = 3, right = 3, top = 3, bottom = 3},
-        })
-        ReturnRaidManager.UI.ImportBox:SetTextInsets(10, 10, 10, 10)
-        ReturnRaidManager.UI.ImportBox:SetBackdropColor(0, 0, 0)
-        ReturnRaidManager.UI.ImportBox:SetBackdropBorderColor(0.3, 0.3, 0.3)
-        ReturnRaidManager.UI.ImportBox:SetMultiLine(true)
-        ReturnRaidManager.UI.ImportBox:SetHeight(200)
-        ReturnRaidManager.UI.ImportBox:SetWidth(665)
-        ReturnRaidManager.UI.ImportBox:SetPoint("TOPLEFT", ReturnRaidManager.UI, "TOPLEFT", 20, -220)
-        ReturnRaidManager.UI.ImportBox:SetPoint("BOTTOMRIGHT", ReturnRaidManager.UI, "BOTTOMRIGHT", -20, 50)
-        ReturnRaidManager.UI.ImportBox:SetAutoFocus(nil)
-        ReturnRaidManager.UI.ImportBox:SetFont("Fonts/FRIZQT__.TTF", 14)
-        ReturnRaidManager.UI.ImportBox:SetJustifyH("LEFT")
-        ReturnRaidManager.UI.ImportBox:SetJustifyV("CENTER")
-		ReturnRaidManager.UI.ImportBox:SetScript("OnEscapePressed", function() this:ClearFocus() end)
-
-        ReturnRaidManager.UI.ImportBox.title = ReturnRaidManager.UI.ImportBox:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-        ReturnRaidManager.UI.ImportBox.title:SetPoint("TOPLEFT", ReturnRaidManager.UI.ImportBox, "TOPLEFT", 0, 15)
-        ReturnRaidManager.UI.ImportBox.title:SetShadowColor(0, 0, 0)
-        ReturnRaidManager.UI.ImportBox.title:SetShadowOffset(0.8, -0.8)
-        ReturnRaidManager.UI.ImportBox.title:SetTextColor(1, 1, 0)
-        ReturnRaidManager.UI.ImportBox.title:SetText("Import String")
-
-
         ReturnRaidManager.UI.CloseButton = CreateFrame("Button", "CloseButton", ReturnRaidManager.UI, "UIPanelCloseButton")
         ReturnRaidManager.UI.CloseButton:SetPoint("TOPRIGHT", ReturnRaidManager.UI, "TOPRIGHT", 0, 0)
         
@@ -141,7 +112,7 @@ function ReturnRaidManager:ToggleUI()
         ReturnRaidManager.UI.ImportButton:SetHeight(20)
         ReturnRaidManager.UI.ImportButton:SetWidth(100)
         ReturnRaidManager.UI.ImportButton:SetText("Import")
-        ReturnRaidManager.UI.ImportButton:SetScript("OnClick", function() self:ImportLayout() end)
+        ReturnRaidManager.UI.ImportButton:SetScript("OnClick", function() self:ToggleImportLayoutFrame() end)
 
         ReturnRaidManager.UI.ExecuteButton = CreateFrame("Button", "ExecuteButton", ReturnRaidManager.UI, "UIPanelButtonTemplate")
         ReturnRaidManager.UI.ExecuteButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.UI, "BOTTOMRIGHT", -20, 10)
@@ -159,6 +130,73 @@ function ReturnRaidManager:ToggleUI()
 
 end
 
+function ReturnRaidManager:ToggleImportLayoutFrame()
+
+    if not ReturnRaidManager.ImportLayoutFrame then
+
+        ReturnRaidManager.ImportLayoutFrame = CreateFrame("Frame", "ReturnRaidManagerImportLayoutFrame", ReturnRaidManager.UI);
+        ReturnRaidManager.ImportLayoutFrame:SetWidth(520)
+        ReturnRaidManager.ImportLayoutFrame:SetHeight(180)
+        ReturnRaidManager.ImportLayoutFrame:SetPoint("CENTER", 0, 0)
+        ReturnRaidManager.ImportLayoutFrame:SetFrameStrata("FULLSCREEN")
+
+        ReturnRaidManager.ImportLayoutFrame:Hide()
+
+        ReturnRaidManager.ImportLayoutFrame:SetBackdrop({
+            bgFile = "Interface/Buttons/WHITE8x8",
+            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+            tile = true,
+            tileSize = 16, edgeSize = 16, 
+            insets = {left = 4, right = 4, top = 4, bottom = 4},
+        })
+        ReturnRaidManager.ImportLayoutFrame:SetBackdropColor(0, 0, 0, 1)
+
+        ReturnRaidManager.ImportLayoutFrame.title = ReturnRaidManager.ImportLayoutFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormalHuge")
+        ReturnRaidManager.ImportLayoutFrame.title:SetPoint("TOP", ReturnRaidManager.ImportLayoutFrame, "TOP", 0, -10)
+        ReturnRaidManager.ImportLayoutFrame.title:SetShadowColor(0, 0, 0)
+        ReturnRaidManager.ImportLayoutFrame.title:SetShadowOffset(0.8, -0.8)
+        ReturnRaidManager.ImportLayoutFrame.title:SetTextColor(1,1,1)
+        ReturnRaidManager.ImportLayoutFrame.title:SetText("Import")
+
+        ReturnRaidManager.ImportLayoutFrame.ImportBox = CreateFrame("Editbox", "ImportBox", ReturnRaidManager.ImportLayoutFrame)
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetBackdrop({
+            bgFile = "Interface/Buttons/WHITE8x8",
+            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+            edgeSize = 16,
+            insets = {left = 3, right = 3, top = 3, bottom = 3},
+        })
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetTextInsets(10, 10, 10, 10)
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetBackdropColor(0, 0, 0)
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetBackdropBorderColor(0.3, 0.3, 0.3)
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetMultiLine(true)
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetHeight(200)
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetWidth(665)
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetPoint("TOPLEFT", ReturnRaidManager.ImportLayoutFrame, "TOPLEFT", 20, -50)
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetPoint("BOTTOMRIGHT", ReturnRaidManager.ImportLayoutFrame, "BOTTOMRIGHT", -20, 50)
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetAutoFocus(nil)
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetFont("Fonts/FRIZQT__.TTF", 10)
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetJustifyH("LEFT")
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetJustifyV("CENTER")
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetScript("OnEscapePressed", function() this:ClearFocus() end)
+
+        ReturnRaidManager.ImportLayoutFrame.CloseButton = CreateFrame("Button", "ImportLayoutFrameCloseButton", ReturnRaidManager.ImportLayoutFrame, "UIPanelCloseButton")
+        ReturnRaidManager.ImportLayoutFrame.CloseButton:SetPoint("TOPRIGHT", ReturnRaidManager.ImportLayoutFrame, "TOPRIGHT", 0, 0)
+
+        ReturnRaidManager.ImportLayoutFrame.ImportButton = CreateFrame("Button", "ImportLayoutFrameImportButton", ReturnRaidManager.ImportLayoutFrame, "UIPanelButtonTemplate")
+        ReturnRaidManager.ImportLayoutFrame.ImportButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.ImportLayoutFrame, "BOTTOMRIGHT", -20, 10)
+        ReturnRaidManager.ImportLayoutFrame.ImportButton:SetHeight(20)
+        ReturnRaidManager.ImportLayoutFrame.ImportButton:SetWidth(100)
+        ReturnRaidManager.ImportLayoutFrame.ImportButton:SetText("Import")
+        ReturnRaidManager.ImportLayoutFrame.ImportButton:SetScript("OnClick", function() self:ImportLayout() end)
+    end
+
+    if ReturnRaidManager.ImportLayoutFrame:IsVisible() then
+        ReturnRaidManager.ImportLayoutFrame:Hide()
+    else
+        ReturnRaidManager.ImportLayoutFrame:Show()
+    end
+end
+
 
 function ReturnRaidManager:ImportLayout()
 
@@ -166,7 +204,7 @@ function ReturnRaidManager:ImportLayout()
         ReturnRaidManager.UI["NameBox"..i]:SetText("")
     end
 
-    text = ReturnRaidManager.UI.ImportBox:GetText()
+    text = ReturnRaidManager.ImportLayoutFrame.ImportBox:GetText()
 
     words = {}
     for word in string.gfind(text, "(%w+)") do
@@ -177,6 +215,8 @@ function ReturnRaidManager:ImportLayout()
         local idx = math.mod(i - 1, 8) * 5 + floor((i - 1) / 8) + 1
         ReturnRaidManager.UI["NameBox"..idx]:SetText(w)
     end
+
+    self:ToggleImportLayoutFrame();
 end
 
 function ReturnRaidManager:LoadCurrentRaidLayout()
