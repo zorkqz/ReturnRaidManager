@@ -15,3 +15,4 @@ Libs\AceEvent-2.0\AceEvent-2.0.lua
 
 Core.lua
 Gui.lua
+Constants.lua
