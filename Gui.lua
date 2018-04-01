@@ -13,9 +13,22 @@ function ReturnRaidManager:CheckName(editbox)
 
     for i = 1,40 do
         name, _, _, _, _, class = GetRaidRosterInfo(i)
+
+        self:Print("" .. (name or "nil") .. " - " .. (class or "nil"))
         if text == name then
-            color = ReturnRaidManager.Constants.ClassColors[class]
-            editbox:SetTextColor(color.r, color.g, color.b)
+            local color = ReturnRaidManager.Constants.ClassColors[class]
+            editbox:SetTextColor(color.r, color.g, color.b, 1)
+            return
+        end
+    end
+
+    numTotalMembers = GetNumGuildMembers();
+    for i = 1,numTotalMembers do
+        name, _, _, _, class = GetGuildRosterInfo(i)
+        self:Print("" .. (name or "nil") .. " - " .. (class or "nil"))
+        if text == name then
+            local color = ReturnRaidManager.Constants.ClassColors[class]
+            editbox:SetTextColor(color.r, color.g, color.b, 0.5)
             return
         end
     end
