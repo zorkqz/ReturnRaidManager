@@ -90,7 +90,7 @@ function ReturnRaidManager:ToggleUI()
         ReturnRaidManager.UI.title:SetShadowColor(0, 0, 0)
         ReturnRaidManager.UI.title:SetShadowOffset(0.8, -0.8)
         ReturnRaidManager.UI.title:SetTextColor(1,1,1)
-        ReturnRaidManager.UI.title:SetText("Return Raid Manger")
+        ReturnRaidManager.UI.title:SetText("Return Raid Manager")
         
         for i = 1,40 do
             ReturnRaidManager.UI["NameBox" .. i] = self:CreateNameBox(i)
