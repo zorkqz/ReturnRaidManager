@@ -35,7 +35,6 @@ function ReturnRaidManager:LoadRaidConfig()
         if ReturnRaidManager.PlayerInfoByName[name] then
             ReturnRaidManager.RaidConfigByName[name] = {
                 name = name,
-                --class = ReturnRaidManager.PlayerInfoByName[name].class,
                 subGroup = floor((i - 1) / 5) + 1
             }
         end
@@ -56,7 +55,7 @@ function ReturnRaidManager:ExecuteLayout()
         
     end
 
-    for i = 1,39 do
+    for i = 1,40 do
         pi1 = ReturnRaidManager.PlayerInfoByRaidIndex[i]
 
         if pi1 and pi1.newSubGroupId and pi1.currentSubGroupId ~= pi1.newSubGroupId then
@@ -65,7 +64,7 @@ function ReturnRaidManager:ExecuteLayout()
             for j = i,40 do
                 pi2 = ReturnRaidManager.PlayerInfoByRaidIndex[j]
                 
-                if pi2 and pi2.currentSubGroupId == pi1.newSubGroupId then
+                if pi2 and pi2.currentSubGroupId == pi1.newSubGroupId and pi2.currentSubGroupId ~= pi2.newSubGroupId then
                     SwapRaidSubgroup(pi1.raidIndex, pi2.raidIndex)
                     pi2.currentSubGroupId = pi1.currentSubGroupId;
                     pi1.currentSubGroupId = pi1.newSubGroupId;

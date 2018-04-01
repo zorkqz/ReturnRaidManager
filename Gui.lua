@@ -193,11 +193,7 @@ function ReturnRaidManager:LoadCurrentRaidLayout()
         if name then
             subGroupIdxs[subgroup] = subGroupIdxs[subgroup] + 1
             nameBoxIdx = subGroupIdxs[subgroup] + 5 * (subgroup - 1)
-
             ReturnRaidManager.UI["NameBox"..nameBoxIdx]:SetText(name)
-
-            --color = ReturnRaidManager.Constants.ClassColors[class]
-            --ReturnRaidManager.UI["NameBox"..nameBoxIdx]:SetTextColor(color.r, color.g, color.b)
         end
     end
 end
