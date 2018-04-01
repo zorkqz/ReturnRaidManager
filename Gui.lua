@@ -16,9 +16,31 @@ ReturnRaidManager.Constants.ClassColors = {
 ReturnRaidManager.UI = nil
 ReturnRaidManager.ImportLayoutFrame = nil
 
-local function CreateNameBox(parent, idx)
 
-    local editbox = CreateFrame("Editbox", "NameBox"..idx, parent, "InputBoxTemplate")
+function ReturnRaidManager:CheckName(editbox)
+
+    text = editbox:GetText()
+
+    if string.len(text) < 3 then
+        return
+    end
+
+    for i = 1,40 do
+        name, _, _, _, _, class = GetRaidRosterInfo(i)
+        if text == name then
+            color = ReturnRaidManager.Constants.ClassColors[class]
+            editbox:SetTextColor(color.r, color.g, color.b)
+            return
+        end
+    end
+
+    editbox:SetTextColor(1, 0, 0)
+end
+
+
+function ReturnRaidManager:CreateNameBox(idx)
+
+    local editbox = CreateFrame("Editbox", "NameBox"..idx, ReturnRaidManager.UI, "InputBoxTemplate")
     editbox:SetHeight(20)
 	editbox:SetWidth(75)
     editbox:SetAutoFocus(nil)
@@ -26,7 +48,8 @@ local function CreateNameBox(parent, idx)
     local x = 20 + floor((idx - 1) / 5) * (15 + 75)
     local y = -70 - math.mod(idx - 1, 5) * 25
     
-    editbox:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
+    editbox:SetPoint("TOPLEFT", ReturnRaidManager.UI, "TOPLEFT", x, y)
+    editbox:SetScript("OnTextChanged", function() self:CheckName(editbox) end)
 
     if math.mod(idx - 1, 5) == 0 then
         editbox.title = editbox:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
@@ -74,7 +97,7 @@ function ReturnRaidManager:ToggleUI()
         ReturnRaidManager.UI.title:SetText("Return Raid Manger")
         
         for i = 1,40 do
-            ReturnRaidManager.UI["NameBox" .. i] = CreateNameBox(ReturnRaidManager.UI, i)
+            ReturnRaidManager.UI["NameBox" .. i] = self:CreateNameBox(i)
         end
 
 
