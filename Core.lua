@@ -1,4 +1,10 @@
 
+-- TODO: Invite/Kick 
+-- TODO: Handle SavedLayouts proper
+-- TODO: Version number
+-- TODO: Minimap Button
+
+
 ReturnRaidManager = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0", "AceDB-2.0")
 ReturnRaidManager:RegisterChatCommand({"/ReturnRaidManager", "/rrm"}, {type = 'execute', func = "ToggleUI"})
 ReturnRaidManager:RegisterDB("ReturnRaidManagerDB")
@@ -60,19 +66,33 @@ function ReturnRaidManager:ExecuteLayout()
     end
 
     for i = 1,40 do
-        pi1 = ReturnRaidManager.PlayerInfoByRaidIndex[i]
+        local pi1 = ReturnRaidManager.PlayerInfoByRaidIndex[i]
 
         if pi1 and pi1.newSubGroupId and pi1.currentSubGroupId ~= pi1.newSubGroupId then
 
             found = false
+
             for j = i,40 do
-                pi2 = ReturnRaidManager.PlayerInfoByRaidIndex[j]
+                local pi2 = ReturnRaidManager.PlayerInfoByRaidIndex[j]
                 
-                if pi2 and pi2.currentSubGroupId == pi1.newSubGroupId and pi2.currentSubGroupId ~= pi2.newSubGroupId then
+                if pi2 and pi2.currentSubGroupId == pi1.newSubGroupId and pi2.newSubGroupId == pi1.currentSubGroupId and pi2.currentSubGroupId ~= pi2.newSubGroupId then
                     SwapRaidSubgroup(pi1.raidIndex, pi2.raidIndex)
                     pi2.currentSubGroupId = pi1.currentSubGroupId;
                     pi1.currentSubGroupId = pi1.newSubGroupId;
                     found = true
+                end
+            end
+
+            if not found then
+                for j = i,40 do
+                    local pi2 = ReturnRaidManager.PlayerInfoByRaidIndex[j]
+
+                    if pi2 and pi2.currentSubGroupId == pi1.newSubGroupId and pi2.currentSubGroupId ~= pi2.newSubGroupId then
+                        SwapRaidSubgroup(pi1.raidIndex, pi2.raidIndex)
+                        pi2.currentSubGroupId = pi1.currentSubGroupId;
+                        pi1.currentSubGroupId = pi1.newSubGroupId;
+                        found = true
+                    end
                 end
             end
 
