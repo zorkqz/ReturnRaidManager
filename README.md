@@ -5,5 +5,5 @@
 /rrm
 
 ![GUI](doc/gui.png "GUI")
-![GUI](doc/import.png "Import")
-![GUI](doc/save.png "Save")
+![GUI](https://i.imgur.com/lSS4Yzc.png)
+![GUI](https://i.imgur.com/mytwfQY.png)
