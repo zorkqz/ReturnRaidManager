@@ -8,9 +8,10 @@ function ReturnRaidManager:CreateNameBox(idx)
 
     local x = 20 + floor((idx - 1) / 5) * (15 + 75)
     local y = -70 - math.mod(idx - 1, 5) * 25
-    
     editbox:SetPoint("TOPLEFT", ReturnRaidManager.UI, "TOPLEFT", x, y)
+
     editbox:SetScript("OnTextChanged", function() self:CheckName(editbox) end)
+    editbox:SetScript("OnTabPressed", function() ReturnRaidManager.UI["NameBox" .. (math.mod(idx, 40) + 1)]:SetFocus() end)
 
     if math.mod(idx - 1, 5) == 0 then
         editbox.title = editbox:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
@@ -179,6 +180,7 @@ function ReturnRaidManager:ToggleSaveCurrentRaidLayoutFrame()
     else
         ReturnRaidManager.SaveLayoutFrame.SaveNameBox:SetText(ReturnRaidManager.UI.LoadedRaidLayout or "")
         ReturnRaidManager.SaveLayoutFrame:Show()
+        ReturnRaidManager.SaveLayoutFrame.SaveNameBox:SetFocus()
     end
 
 end
@@ -251,6 +253,7 @@ function ReturnRaidManager:ToggleImportLayoutFrame()
         ReturnRaidManager.ImportLayoutFrame:Hide()
     else
         ReturnRaidManager.ImportLayoutFrame:Show()
+        ReturnRaidManager.ImportLayoutFrame.ImportBox:SetFocus()
     end
 end
 
@@ -284,6 +287,8 @@ function ReturnRaidManager:SaveCurrentRaidLayout(name)
     end
 
     self.db.account.SavedLayouts[name] = layout
+    ReturnRaidManager.UI.LoadedRaidLayout = name
+
 end
 
 
