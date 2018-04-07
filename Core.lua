@@ -3,6 +3,7 @@
 -- TODO: Handle SavedLayouts proper
 -- TODO: Version number
 -- TODO: Minimap Button
+-- TODO: Assist?
 
 ReturnRaidManager = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0", "AceDB-2.0")
 ReturnRaidManager:RegisterChatCommand({"/ReturnRaidManager", "/rrm"}, {type = 'execute', func = "ToggleUI"})
@@ -133,4 +134,38 @@ function ReturnRaidManager:CheckName(editbox)
     end
 
     editbox:SetTextColor(1, 0, 0)
+end
+
+function ReturnRaidManager:KickInvButton()
+
+    layout = {}
+    for i = 1, 40 do
+        name = ReturnRaidManager.UI["NameBox"..i]:GetText()
+        table.insert(layout, name)
+    end
+
+    raid = {}
+    for i = 1,40 do
+        name = GetRaidRosterInfo(i)
+        if name then
+            if layout[name] == nil then
+                UninviteByName(name)
+                self:Print("Kicked: " .. name)
+            else
+                table.insert(raid, name)
+            end
+        end
+    end
+
+    for name in layout do
+        if raid[name] == nil then  
+            InviteByName(name)
+            self:Print("Invited: " .. name)
+        end
+    end
+
+
+
+
+
 end
