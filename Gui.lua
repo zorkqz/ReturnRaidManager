@@ -150,7 +150,10 @@ function ReturnRaidManager:ToggleUI()
         ReturnRaidManager.UI.KickInvButton:SetHeight(20)
         ReturnRaidManager.UI.KickInvButton:SetWidth(100)
         ReturnRaidManager.UI.KickInvButton:SetText("Kick/Invite")
-        ReturnRaidManager.UI.KickInvButton:SetScript("OnClick", function() self:ToggleKickInvitePlayersQuestionFrame() end)
+        ReturnRaidManager.UI.KickInvButton:SetScript("OnClick", function()
+            self:ToggleQuestionFrame("Do you really want to remove all players\nnot in the current layout from the raid?",
+                                     function() self:KickInvitePlayers() end)
+        end)
 
         ReturnRaidManager.UI.ExecuteButton = CreateFrame("Button", "ExecuteButton", ReturnRaidManager.UI, "UIPanelButtonTemplate")
         ReturnRaidManager.UI.ExecuteButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.UI, "BOTTOMRIGHT", -20, 10)
@@ -168,64 +171,63 @@ function ReturnRaidManager:ToggleUI()
 
 end
 
-function ReturnRaidManager:ToggleKickInvitePlayersQuestionFrame()
+function ReturnRaidManager:ToggleQuestionFrame(text, func)
 
-    if not ReturnRaidManager.KickInvitePlayersQuestionFrame then
+    if not ReturnRaidManager.QuestionFrame then
 
-        ReturnRaidManager.KickInvitePlayersQuestionFrame = CreateFrame("Frame", "KickInvitePlayersQuestionFrame", ReturnRaidManager.UI);
-        ReturnRaidManager.KickInvitePlayersQuestionFrame:SetWidth(300)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame:SetHeight(80)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame:SetPoint("CENTER", 0, 0)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame:SetFrameStrata("FULLSCREEN")
+        ReturnRaidManager.QuestionFrame = CreateFrame("Frame", "QuestionFrame", ReturnRaidManager.UI);
+        ReturnRaidManager.QuestionFrame:SetWidth(300)
+        ReturnRaidManager.QuestionFrame:SetHeight(80)
+        ReturnRaidManager.QuestionFrame:SetPoint("CENTER", 0, 0)
+        ReturnRaidManager.QuestionFrame:SetFrameStrata("FULLSCREEN")
 
-        ReturnRaidManager.KickInvitePlayersQuestionFrame:Hide()
+        ReturnRaidManager.QuestionFrame:Hide()
 
-        ReturnRaidManager.KickInvitePlayersQuestionFrame:SetBackdrop({
+        ReturnRaidManager.QuestionFrame:SetBackdrop({
             bgFile = "Interface/Buttons/WHITE8x8",
             edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
             tile = true,
             tileSize = 16, edgeSize = 16, 
             insets = {left = 4, right = 4, top = 4, bottom = 4},
         })
-        ReturnRaidManager.KickInvitePlayersQuestionFrame:SetBackdropColor(0, 0, 0, 1)
+        ReturnRaidManager.QuestionFrame:SetBackdropColor(0, 0, 0, 1)
 
-        ReturnRaidManager.KickInvitePlayersQuestionFrame:SetBackdropColor(0, 0, 0, 1)
+        ReturnRaidManager.QuestionFrame:SetBackdropColor(0, 0, 0, 1)
 
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.title = ReturnRaidManager.KickInvitePlayersQuestionFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.title:SetPoint("TOP", ReturnRaidManager.KickInvitePlayersQuestionFrame, "TOP", 0, -10)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.title:SetShadowColor(0, 0, 0)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.title:SetShadowOffset(0.8, -0.8)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.title:SetTextColor(1,1,1)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.title:SetText("Do you really want to remove all players\nnot in the current layout from the raid?")
+        ReturnRaidManager.QuestionFrame.title = ReturnRaidManager.QuestionFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        ReturnRaidManager.QuestionFrame.title:SetPoint("TOP", ReturnRaidManager.QuestionFrame, "TOP", 0, -10)
+        ReturnRaidManager.QuestionFrame.title:SetShadowColor(0, 0, 0)
+        ReturnRaidManager.QuestionFrame.title:SetShadowOffset(0.8, -0.8)
+        ReturnRaidManager.QuestionFrame.title:SetTextColor(1,1,1)
 
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.CloseButton = CreateFrame("Button", "KickInvitePlayersQuestionFrameCloseButton", ReturnRaidManager.KickInvitePlayersQuestionFrame, "UIPanelCloseButton")
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.CloseButton:SetPoint("TOPRIGHT", ReturnRaidManager.KickInvitePlayersQuestionFrame, "TOPRIGHT", 0, 0)
+        ReturnRaidManager.QuestionFrame.CloseButton = CreateFrame("Button", "QuestionFrameCloseButton", ReturnRaidManager.QuestionFrame, "UIPanelCloseButton")
+        ReturnRaidManager.QuestionFrame.CloseButton:SetPoint("TOPRIGHT", ReturnRaidManager.QuestionFrame, "TOPRIGHT", 0, 0)
 
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.YesButton = CreateFrame("Button", "KickInvitePlayersQuestionFrameYesButton", ReturnRaidManager.KickInvitePlayersQuestionFrame, "UIPanelButtonTemplate")
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.YesButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.KickInvitePlayersQuestionFrame, "BOTTOMRIGHT", -130, 10)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.YesButton:SetHeight(20)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.YesButton:SetWidth(100)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.YesButton:SetText("Yes")
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.YesButton:SetScript("OnClick", function() 
-                self:KickInvitePlayers()
-                self:ToggleKickInvitePlayersQuestionFrame()
+        ReturnRaidManager.QuestionFrame.YesButton = CreateFrame("Button", "QuestionFrameYesButton", ReturnRaidManager.QuestionFrame, "UIPanelButtonTemplate")
+        ReturnRaidManager.QuestionFrame.YesButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.QuestionFrame, "BOTTOMRIGHT", -130, 10)
+        ReturnRaidManager.QuestionFrame.YesButton:SetHeight(20)
+        ReturnRaidManager.QuestionFrame.YesButton:SetWidth(100)
+        ReturnRaidManager.QuestionFrame.YesButton:SetText("Yes")
+        ReturnRaidManager.QuestionFrame.YesButton:SetScript("OnClick", function() 
+                func()
+                self:ToggleQuestionFrame()
             end)
 
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.CancelButton = CreateFrame("Button", "KickInvitePlayersQuestionFrameCancelButton", ReturnRaidManager.KickInvitePlayersQuestionFrame, "UIPanelButtonTemplate")
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.CancelButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.KickInvitePlayersQuestionFrame, "BOTTOMRIGHT", -20, 10)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.CancelButton:SetHeight(20)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.CancelButton:SetWidth(100)
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.CancelButton:SetText("Cancel")
-        ReturnRaidManager.KickInvitePlayersQuestionFrame.CancelButton:SetScript("OnClick", function() 
-                self:ToggleKickInvitePlayersQuestionFrame()
+        ReturnRaidManager.QuestionFrame.CancelButton = CreateFrame("Button", "QuestionFrameCancelButton", ReturnRaidManager.QuestionFrame, "UIPanelButtonTemplate")
+        ReturnRaidManager.QuestionFrame.CancelButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.QuestionFrame, "BOTTOMRIGHT", -20, 10)
+        ReturnRaidManager.QuestionFrame.CancelButton:SetHeight(20)
+        ReturnRaidManager.QuestionFrame.CancelButton:SetWidth(100)
+        ReturnRaidManager.QuestionFrame.CancelButton:SetText("Cancel")
+        ReturnRaidManager.QuestionFrame.CancelButton:SetScript("OnClick", function() 
+                self:ToggleQuestionFrame()
             end)
     end
 
-
-    if ReturnRaidManager.KickInvitePlayersQuestionFrame:IsVisible() then
-        ReturnRaidManager.KickInvitePlayersQuestionFrame:Hide()
+    if ReturnRaidManager.QuestionFrame:IsVisible() then
+        ReturnRaidManager.QuestionFrame:Hide()
     else
-        ReturnRaidManager.KickInvitePlayersQuestionFrame:Show()
+        ReturnRaidManager.QuestionFrame.title:SetText(text)
+        ReturnRaidManager.QuestionFrame:Show()
     end
 
 end
