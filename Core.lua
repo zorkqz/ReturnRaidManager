@@ -1,5 +1,4 @@
 
--- TODO: Invite/Kick 
 -- TODO: Handle SavedLayouts proper
 -- TODO: Version number
 -- TODO: Minimap Button
@@ -135,4 +134,52 @@ function ReturnRaidManager:CheckName(editbox)
     end
 
     editbox:SetTextColor(1, 0, 0)
+end
+
+function ReturnRaidManager:KickInvitePlayers()
+
+    playerName = UnitName("player")
+    playerRank = 0
+    for i = 1,40 do
+        name, rank = GetRaidRosterInfo(i)
+        if name == playerName then
+            playerRank = rank
+        end
+    end
+
+    if playerRank == 0 then
+        self:Print("Removing and Inviting players to the raid requires raid lead or assist.")
+        return
+    end
+
+    layout = {}
+    for i = 1, 40 do
+        name = ReturnRaidManager.UI["NameBox"..i]:GetText()
+        if name and string.len(name) > 2 then
+            layout[name] = name
+        end
+    end
+
+    raid = {}
+    for i = 1,40 do
+        name, rank = GetRaidRosterInfo(i)
+        if name then
+            if layout[name] then
+                raid[name] = name
+            else               
+                if rank > playerRank then
+                    self:Print("Can't remove raid leader " .. name .. " from the raid.")
+                else
+                    UninviteByName(name)
+                end
+            end
+        end
+    end
+
+    for i, name in layout do
+        if raid[name] == nil then  
+            InviteByName(name)
+        end
+    end
+
 end
