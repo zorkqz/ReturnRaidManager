@@ -3,6 +3,8 @@
 -- TODO: Handle SavedLayouts proper
 -- TODO: Version number
 -- TODO: Minimap Button
+-- TODO: Autocomplete names
+-- TODO: Bug - Guild Tab
 
 ReturnRaidManager = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0", "AceDB-2.0")
 ReturnRaidManager:RegisterChatCommand({"/ReturnRaidManager", "/rrm"}, {type = 'execute', func = "ToggleUI"})
