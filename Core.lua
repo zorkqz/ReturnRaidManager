@@ -1,16 +1,20 @@
 
--- TODO: Handle SavedLayouts proper
 -- TODO: Version number
 -- TODO: Minimap Button
 -- TODO: Autocomplete names
 -- TODO: Bug - Guild Tab
+-- TODO: ScrollPane for saved layouts
 
 ReturnRaidManager = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0", "AceDB-2.0")
 ReturnRaidManager:RegisterChatCommand({"/ReturnRaidManager", "/rrm"}, {type = 'execute', func = "ToggleUI"})
-ReturnRaidManager:RegisterDB("ReturnRaidManagerDB")
+ReturnRaidManager:RegisterDB("ReturnRaidManagerDB", "ReturnRaidManagerDBPerChar")
 
 ReturnRaidManager:RegisterDefaults("account", {
     SavedLayouts = {}
+})
+ReturnRaidManager:RegisterDefaults("char", {
+    MinimapButtonPosition = 336,
+    MinimapButtonRadius = 78
 })
 
 ReturnRaidManager.PlayerInfoByName = {}

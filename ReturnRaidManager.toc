@@ -4,6 +4,7 @@
 ## Version: 0.1
 ## OptionalDeps: Ace2
 ## SavedVariables: ReturnRaidManagerDB
+## SavedVariablesPerCharacter: ReturnRaidManagerDBPerChar
 ## X-Category: Interface Enhancements
 
 Libs\AceLibrary\AceLibrary.lua
@@ -16,3 +17,6 @@ Libs\AceEvent-2.0\AceEvent-2.0.lua
 Core.lua
 Gui.lua
 Constants.lua
+
+MinimapButton.lua
+MinimapButton.xml
