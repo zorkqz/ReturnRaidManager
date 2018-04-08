@@ -49,7 +49,8 @@ function ReturnRaidManager:CreateSavedLayoutButton(name, idx)
     button:SetText(name)
     button:SetScript("OnClick", function()
         if arg1 == "RightButton" then
-            self:RemoveSavedRaidLayout(name)
+            self:ToggleQuestionFrame("Do you really want to delete\nthe '" .. name .. "' layout?",
+                                     function() self:RemoveSavedRaidLayout(name) end)
         else
             self:LoadSavedRaidLayout(name)
         end
@@ -208,10 +209,6 @@ function ReturnRaidManager:ToggleQuestionFrame(text, func)
         ReturnRaidManager.QuestionFrame.YesButton:SetHeight(20)
         ReturnRaidManager.QuestionFrame.YesButton:SetWidth(100)
         ReturnRaidManager.QuestionFrame.YesButton:SetText("Yes")
-        ReturnRaidManager.QuestionFrame.YesButton:SetScript("OnClick", function() 
-                func()
-                self:ToggleQuestionFrame()
-            end)
 
         ReturnRaidManager.QuestionFrame.CancelButton = CreateFrame("Button", "QuestionFrameCancelButton", ReturnRaidManager.QuestionFrame, "UIPanelButtonTemplate")
         ReturnRaidManager.QuestionFrame.CancelButton:SetPoint("BOTTOMRIGHT", ReturnRaidManager.QuestionFrame, "BOTTOMRIGHT", -20, 10)
@@ -227,6 +224,12 @@ function ReturnRaidManager:ToggleQuestionFrame(text, func)
         ReturnRaidManager.QuestionFrame:Hide()
     else
         ReturnRaidManager.QuestionFrame.title:SetText(text)
+
+        ReturnRaidManager.QuestionFrame.YesButton:SetScript("OnClick", function() 
+            func()
+            self:ToggleQuestionFrame()
+        end)
+
         ReturnRaidManager.QuestionFrame:Show()
     end
 
