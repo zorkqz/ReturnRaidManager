@@ -28,21 +28,45 @@ end
 
 function ReturnRaidManager:CreateSavedLayoutButton(name)
 
-    button = CreateFrame('Button', "SavedLayoutButton"..ReturnRaidManager.UI.SavedLayoutIdx, ReturnRaidManager.UI, "UIPanelButtonTemplate")
+    button = ReturnRaidManager.UI["SavedLayoutButton" .. ReturnRaidManager.UI.SavedLayoutIdx]
 
-    local x = 20 + floor(ReturnRaidManager.UI.SavedLayoutIdx / 4) * 110
-    local y = -210 + math.mod(ReturnRaidManager.UI.SavedLayoutIdx, 4) * -25
+    if not button then
+        self:Print("new button: " .. name)
+        button = CreateFrame('Button', "SavedLayoutButton"..ReturnRaidManager.UI.SavedLayoutIdx, ReturnRaidManager.UI, "UIPanelButtonTemplate")
 
-    button:SetPoint('TOPLEFT', ReturnRaidManager.UI, 'TOPLEFT', x, y)
-    button:SetHeight(20)
-    button:SetWidth(100)
+        local x = 20 + floor(ReturnRaidManager.UI.SavedLayoutIdx / 4) * 110
+        local y = -210 + math.mod(ReturnRaidManager.UI.SavedLayoutIdx, 4) * -25
+    
+        button:SetPoint('TOPLEFT', ReturnRaidManager.UI, 'TOPLEFT', x, y)
+        button:SetHeight(20)
+        button:SetWidth(100)
+
+        ReturnRaidManager.UI["SavedLayoutButton" .. ReturnRaidManager.UI.SavedLayoutIdx] = button
+    end
+
     button:SetText(name)
-
     button:SetScript("OnClick", function() self:LoadSavedRaidLayout(name) end)
 
     ReturnRaidManager.UI.SavedLayoutIdx = ReturnRaidManager.UI.SavedLayoutIdx + 1
 end
 
+function ReturnRaidManager:CreateSavedLayoutButtons()
+
+    self:Print("CreateSavedLayoutButtons")
+
+    ReturnRaidManager.UI.SavedLayoutIdx = 0
+
+    local names = {}
+    for name in pairs(self.db.account.SavedLayouts) do
+         table.insert(names, name)
+    end
+
+    table.sort(names)
+
+    for _, name in ipairs(names) do
+        self:CreateSavedLayoutButton(name)
+    end
+end
 
 function ReturnRaidManager:ToggleUI()
 
@@ -80,10 +104,7 @@ function ReturnRaidManager:ToggleUI()
             ReturnRaidManager.UI["NameBox" .. i] = self:CreateNameBox(i)
         end
 
-        ReturnRaidManager.UI.SavedLayoutIdx = 0
-        for name, layout in self.db.account.SavedLayouts do
-            self:CreateSavedLayoutButton(name)
-        end
+        self:CreateSavedLayoutButtons()
 
         ReturnRaidManager.UI.CloseButton = CreateFrame("Button", "CloseButton", ReturnRaidManager.UI, "UIPanelCloseButton")
         ReturnRaidManager.UI.CloseButton:SetPoint("TOPRIGHT", ReturnRaidManager.UI, "TOPRIGHT", 0, 0)
@@ -350,12 +371,14 @@ function ReturnRaidManager:SaveCurrentRaidLayout(name)
         table.insert(layout, text)
     end
 
-    if not self.db.account.SavedLayouts[name] then
-        self:CreateSavedLayoutButton(name)
-    end
+    local isNew = self.db.account.SavedLayouts[name] == nil
 
     self.db.account.SavedLayouts[name] = layout
     ReturnRaidManager.UI.LoadedRaidLayout = name
+
+    if isNew then
+        self:CreateSavedLayoutButtons()
+    end
 
 end
 
