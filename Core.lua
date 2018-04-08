@@ -1,6 +1,5 @@
 
 -- TODO: Version number
--- TODO: Minimap Button
 -- TODO: Autocomplete names
 -- TODO: Bug - Guild Tab
 -- TODO: ScrollPane for saved layouts
