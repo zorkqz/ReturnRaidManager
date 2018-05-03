@@ -21,6 +21,8 @@ ReturnRaidManager.PlayerInfoByRaidIndex = {}
 function ReturnRaidManager:UpdatePlayerInfo()
 
     ReturnRaidManager.PlayerInfoByName = {}
+    ReturnRaidManager.PlayerInfoByRaidIndex = {}
+
     for i = 1,40 do
         name, _, subgroup, _, _, class = GetRaidRosterInfo(i)
 
@@ -35,7 +37,7 @@ function ReturnRaidManager:UpdatePlayerInfo()
             ReturnRaidManager.PlayerInfoByRaidIndex[i] = playerInfo
         end
     end
-
+    
 end
 
 ReturnRaidManager.RaidConfigByName = {}
