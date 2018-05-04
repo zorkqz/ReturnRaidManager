@@ -77,7 +77,7 @@ function ReturnRaidManager:ExecuteLayout()
 
             found = false
 
-            for j = i,40 do
+            for j = 1,40 do
                 local pi2 = ReturnRaidManager.PlayerInfoByRaidIndex[j]
                 
                 if pi2 and pi2.currentSubGroupId == pi1.newSubGroupId and pi2.newSubGroupId == pi1.currentSubGroupId and pi2.currentSubGroupId ~= pi2.newSubGroupId then
@@ -89,7 +89,7 @@ function ReturnRaidManager:ExecuteLayout()
             end
 
             if not found then
-                for j = i,40 do
+                for j = 1,40 do
                     local pi2 = ReturnRaidManager.PlayerInfoByRaidIndex[j]
 
                     if pi2 and pi2.currentSubGroupId == pi1.newSubGroupId and pi2.currentSubGroupId ~= pi2.newSubGroupId then
