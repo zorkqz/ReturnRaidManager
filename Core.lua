@@ -1,7 +1,6 @@
 
 -- TODO: Version number
 -- TODO: Autocomplete names
--- TODO: Bug - Guild Tab
 -- TODO: ScrollPane for saved layouts
 
 ReturnRaidManager = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0", "AceDB-2.0")
@@ -124,16 +123,6 @@ function ReturnRaidManager:CheckName(editbox)
         if text == name then
             local color = ReturnRaidManager.Constants.ClassColors[class]
             editbox:SetTextColor(color.r, color.g, color.b, 1)
-            return
-        end
-    end
-
-    numTotalMembers = GetNumGuildMembers();
-    for i = 1,numTotalMembers do
-        name, _, _, _, class = GetGuildRosterInfo(i)
-        if text == name then
-            local color = ReturnRaidManager.Constants.ClassColors[class]
-            editbox:SetTextColor(color.r, color.g, color.b, 0.5)
             return
         end
     end
